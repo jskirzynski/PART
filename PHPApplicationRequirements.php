@@ -29,10 +29,20 @@ class PHPApplicationRequirement
      */
     public function isPHPVersion($version, $operator=self::COMPARE_GREATER_THAN_OR_EQUAL) {
         $this->addResult('PHP version', 
-            PHP_VERSION, 
-            $version, 
             version_compare(PHP_VERSION, $version, $operator), 
+            $version, 
+            PHP_VERSION, 
             $operator);
+    }
+    
+    /**
+     * Check if the extensions are loaded
+     * @param array $names array of names extensions to check
+     */
+    public function isExtensionsLoaded(array $names) {
+        foreach ($names as $name) {
+            $this->addResult('Extension loaded', extension_loaded($name), $name);
+        }
     }
 
     public function __destruct() {
@@ -41,8 +51,8 @@ class PHPApplicationRequirement
         foreach ($this->results as $record) {
             echo $record['name'] ."\t\t". 
                 (($record['result']) ? 'OK' : 'failure') ."\t".
-                $record['expected'] 
-                ." (". $record['operator'] .")\t".
+                $record['expected'] .
+                (($record['operator']) ? " (". $record['operator'] .")\t" : '').
                 $record['value'] . PHP_EOL;
         }
     }
@@ -50,12 +60,12 @@ class PHPApplicationRequirement
     /**
      * Add test results to array
      * @param string $name name of test
-     * @param string $value value for test from system
-     * @param string $expected value expected for user 
      * @param boolean $result result of comparison system value and expected value
+     * @param string $expected value expected for user 
+     * @param string $value value for test from system
      * @param string $operator used operator
      */
-    protected function addResult($name, $value, $expected, $result, $operator) {
+    protected function addResult($name, $result, $expected, $value='', $operator='') {
         array_push($this->results, array(
             'name' => $name,
             'value' => $value,
