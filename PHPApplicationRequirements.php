@@ -26,7 +26,7 @@ class PHPApplicationRequirement
      * (http://www.php.net/manual/en/function.version-compare.php)
      * @param string $operator
      */
-    public function isPHPVersion($version, $operator=self::COMPARE_GREATER_THAN_OR_EQUAL) {
+    public function checkPHPVersion($version, $operator=self::COMPARE_GREATER_THAN_OR_EQUAL) {
         $this->addResult('PHP version', 
             version_compare(PHP_VERSION, $version, $operator), 
             $version, 
@@ -41,7 +41,7 @@ class PHPApplicationRequirement
      * @param string $version
      * @param string $operator
      */
-    public function isExtensionLoaded($name, $version=null, $operator=self::COMPARE_GREATER_THAN_OR_EQUAL) {
+    public function checkExtensionLoaded($name, $version=null, $operator=self::COMPARE_GREATER_THAN_OR_EQUAL) {
         if ($version) {
             $value = phpversion($name);
             $result = version_compare($value, $version, $operator);
@@ -57,7 +57,7 @@ class PHPApplicationRequirement
      * Check the extensions are loaded
      * @param array $names array of names extensions to check
      */
-    public function isExtensionsLoaded(array $names) {
+    public function checkExtensionsLoaded(array $names) {
         foreach ($names as $name) {
             $this->addResult('Extension loaded ['. $name .']', extension_loaded($name), $name);
         }
@@ -68,7 +68,7 @@ class PHPApplicationRequirement
      * @param string $name name of php.ini directive for checking
      * @param mixed $expected expected value of directive
      */
-    public function isConfigHasValue($name, $expected, $operator=self::COMPARE_EQUAL ) {
+    public function checkConfigHasValue($name, $expected, $operator=self::COMPARE_EQUAL ) {
         $value = ini_get($name);
         
         $this->addResult('Config ['. $name .']', $this->compare($value, $expected, $operator), $expected, $value);
