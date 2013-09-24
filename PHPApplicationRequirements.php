@@ -62,7 +62,7 @@ class PHPApplicationRequirement
      */
     public function checkExtensionsLoaded(array $names) {
         foreach ($names as $name) {
-            $this->addResult('Extension loaded ['. $name .']', extension_loaded($name), $name);
+            $this->addResult('Extension loaded ['. $name .']', extension_loaded($name));
         }
     }
     
