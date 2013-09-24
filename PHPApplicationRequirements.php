@@ -141,6 +141,20 @@ class PHPApplicationRequirement
         
         $this->addResult('PDO driver ['. $name .']', in_array($name, $drivers));
     }
+    
+    /**
+     * Check the OS is MS Windows
+     */
+    public function checkWindowsServer() {
+        $this->addResult('Windows serwer', $this->checkWindowsOs());
+    }
+    
+    /**
+     * Check the OS isn't MS Windows
+     */
+    public function checkNotWindowsServer() {
+        $this->addResult('Not Windows serwer', !$this->checkWindowsOs());
+    }
 
     public function __destruct() {
         echo "Test name\t\tResult\tExpected value\tSystem value". PHP_EOL;
@@ -154,6 +168,15 @@ class PHPApplicationRequirement
         }
     }
     
+    /**
+     * Check the OS is MS Windows
+     * @return boolean
+     */
+    protected function checkWindowsOs() {
+        return (strtolower(php_uname('s')) == strtolower('windows'));
+    }
+
+
     /**
      * Check the elements (functions or class) are not disabled
      * @param string $type
