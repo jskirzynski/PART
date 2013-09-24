@@ -36,6 +36,26 @@ class PHPApplicationRequirement
     }
     
     /**
+     * Check the extension is loaded
+     * You can too check the version of extension
+     * @param string $name
+     * @param string $version
+     * @param string $operator
+     */
+    public function isExtensionLoaded($name, $version=null, $operator=self::COMPARE_GREATER_THAN_OR_EQUAL) {
+        if ($version) {
+            $value = phpversion($name);
+            $result = version_compare($value, $version, $operator);
+            $name .= ' ('. $version .')';
+        } else {
+            $result = extension_loaded($name);
+            $operator = '';
+        }
+        
+        $this->addResult('Extension loaded', $result, $name, $value, $operator);
+    }
+    
+    /**
      * Check if the extensions are loaded
      * @param array $names array of names extensions to check
      */
