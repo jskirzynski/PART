@@ -92,7 +92,56 @@ class PHPApplicationRequirement
     public function checkNotDisabledClass(array $classes) {
         $this->checkNotDisabled(self::TYPE_AVAILABLE_CLASS, $classes);
     }
+
+    /**
+     * Check the MySQL support extension is available
+     * @param mixed $version
+     * @param string $operator
+     */
+    public function checkMySQL($version='', $operator=self::COMPARE_GREATER_THAN_OR_EQUAL) {
+        $this->checkExtensionLoaded('mysql', $version, $operator);
+    }
     
+    /**
+     * Check the MySQLi support extension is available
+     * @param mixed $version
+     * @param string $operator
+     */
+    public function checkMySQLi($version='', $operator=self::COMPARE_GREATER_THAN_OR_EQUAL) {
+        $this->checkExtensionLoaded('mysqli', $version, $operator);
+    }
+    
+    /**
+     * Check the PostgreSQL support extension is available
+     * @param mixed $version
+     * @param string $operator
+     */
+    public function checkPostgreSQLi($version='', $operator=self::COMPARE_GREATER_THAN_OR_EQUAL) {
+        $this->checkExtensionLoaded('pgsql', $version, $operator);
+    }
+    
+    /**
+     * Check the PDO module is available
+     * @param mixed $version
+     * @param string $operator
+     */
+    public function checkPDO($version='', $operator=self::COMPARE_GREATER_THAN_OR_EQUAL) {
+        $this->checkExtensionLoaded('PDO', $version, $operator);
+    }
+    
+    /**
+     * Check the PDO driver is available
+     * @param string $name
+     */
+    public function checkPDODriver($name) {
+        $drivers = array();
+        if (function_exists('pdo_drivers')) {
+            $drivers = pdo_drivers();
+        }
+        
+        $this->addResult('PDO driver ['. $name .']', in_array($name, $drivers));
+    }
+
     public function __destruct() {
         echo "Test name\t\tResult\tExpected value\tSystem value". PHP_EOL;
         
