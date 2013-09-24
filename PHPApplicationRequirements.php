@@ -20,7 +20,6 @@ class PHPApplicationRequirement
      */
     protected $results = array();
 
-
     /**
      * Check the PHP version
      * @param string $version version of PHP in "PHP-standardized" format 
@@ -46,23 +45,33 @@ class PHPApplicationRequirement
         if ($version) {
             $value = phpversion($name);
             $result = version_compare($value, $version, $operator);
-            $name .= ' ('. $version .')';
         } else {
             $result = extension_loaded($name);
             $operator = '';
         }
         
-        $this->addResult('Extension loaded', $result, $name, $value, $operator);
+        $this->addResult('Extension loaded ['. $name .']', $result, $version, $value, $operator);
     }
     
     /**
-     * Check if the extensions are loaded
+     * Check the extensions are loaded
      * @param array $names array of names extensions to check
      */
     public function isExtensionsLoaded(array $names) {
         foreach ($names as $name) {
-            $this->addResult('Extension loaded', extension_loaded($name), $name);
+            $this->addResult('Extension loaded ['. $name .']', extension_loaded($name), $name);
         }
+    }
+    
+    /**
+     * Check the config value
+     * @param string $name name of php.ini directive for checking
+     * @param mixed $expected expected value of directive
+     */
+    public function isConfigHasValue($name, $expected, $operator=self::COMPARE_EQUAL ) {
+        $value = ini_get($name);
+        
+        $this->addResult('Config ['. $name .']', $this->compare($value, $expected, $operator), $expected, $value);
     }
 
     public function __destruct() {
@@ -74,6 +83,33 @@ class PHPApplicationRequirement
                 $record['expected'] .
                 (($record['operator']) ? " (". $record['operator'] .")\t" : '').
                 $record['value'] . PHP_EOL;
+        }
+    }
+    
+    /**
+     * Compare values by defined operator
+     * @param mixed $value1
+     * @param mixed $value2
+     * @param string $operator
+     * @return boolean
+     * @throws Exception
+     */
+    protected function compare($value1, $value2, $operator=self::COMPARE_EQUAL) {
+        switch ($operator) {
+            case self::COMPARE_EQUAL:
+                return ($value1 == $value2);
+            case self::COMPARE_GREATER_THAN:
+                return ($value1 > $value2);
+            case self::COMPARE_GREATER_THAN_OR_EQUAL:
+                return ($value1 >= $value2);
+            case self::COMPARE_LESS_THAN:
+                return ($value1 < $value2);
+            case self::COMPARE_LESS_THAN_OR_EQUAL:
+                return ($value1 <= $value2);
+            case self::COMPARE_NOT_EQUAL:
+                return ($value1 != $value2);
+            default:
+                throw new Exception('Compare operator not implemented');
         }
     }
 
