@@ -14,6 +14,9 @@ class PHPApplicationRequirement
     const COMPARE_LESS_THAN = '<';
     const COMPARE_LESS_THAN_OR_EQUAL = '<=';
     
+    const TYPE_AVAILABLE_FUNCTION = 'function';
+    const TYPE_AVAILABLE_CLASS = 'class';
+    
     /**
      * Results of tests
      * @var array
@@ -73,7 +76,23 @@ class PHPApplicationRequirement
         
         $this->addResult('Config ['. $name .']', $this->compare($value, $expected, $operator), $expected, $value);
     }
-
+    
+    /**
+     * Check the functions are not disabled
+     * @param array $functions
+     */
+    public function checkNotDisabledFunctions(array $functions) {
+        $this->checkNotDisabled(self::TYPE_AVAILABLE_FUNCTION, $functions);
+    }
+    
+    /**
+     * Check the classes are not disabled
+     * @param array $classes
+     */
+    public function checkNotDisabledClass(array $classes) {
+        $this->checkNotDisabled(self::TYPE_AVAILABLE_CLASS, $classes);
+    }
+    
     public function __destruct() {
         echo "Test name\t\tResult\tExpected value\tSystem value". PHP_EOL;
         
@@ -86,6 +105,30 @@ class PHPApplicationRequirement
         }
     }
     
+    /**
+     * Check the elements (functions or class) are not disabled
+     * @param string $type
+     * @param array $names
+     * @throws Exception
+     */
+    protected function checkNotDisabled($type, array $names) {
+        switch ($type) {
+            case self::TYPE_AVAILABLE_FUNCTION:
+                $disableString = ini_get('disable_functions');
+                break;
+            case self::TYPE_AVAILABLE_CLASS:
+                $disableString = ini_get('disable_classes');
+                break;
+            default:
+                throw new Exception('Available typ not implemented');
+        }
+        
+        $disable = explode(',', $disableString);
+        foreach ($names as $name) {
+            $this->addResult('Not disable '. $type .' ['. $name .']', !in_array($name, $disable));
+        }
+    }
+
     /**
      * Compare values by defined operator
      * @param mixed $value1
@@ -121,7 +164,7 @@ class PHPApplicationRequirement
      * @param string $value value for test from system
      * @param string $operator used operator
      */
-    protected function addResult($name, $result, $expected, $value='', $operator='') {
+    protected function addResult($name, $result, $expected='', $value='', $operator='') {
         array_push($this->results, array(
             'name' => $name,
             'value' => $value,
