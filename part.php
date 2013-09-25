@@ -1,11 +1,12 @@
 <?php
 
 /**
+ * PAR is a PHP Applications Requirements Tester
  * Class for testing application requirements 
  * 
  * @author Jacek Skirzynski <jacek@skirzynski.eu>
  */
-class PHPApplicationRequirement
+class PART
 {
     const COMPARE_EQUAL = '==';
     const COMPARE_NOT_EQUAL = '<>';
