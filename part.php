@@ -50,6 +50,7 @@ class PART
         } else {
             $result = extension_loaded($name);
             $operator = '';
+            $value = '';
         }
 
         $this->addResult('Extension loaded [' . $name . ']', $result, $version, $value, $operator);
@@ -169,7 +170,7 @@ class PART
     public function __destruct()
     {
         echo "Test name\t\tResult\tExpected value\tSystem value" . PHP_EOL;
-
+        
         foreach ($this->results as $record) {
             echo $record['name'] . "\t\t" .
             (($record['result']) ? 'OK' : 'failure') . "\t" .
