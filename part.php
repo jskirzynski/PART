@@ -203,6 +203,19 @@ class PART
         return $this;
     }
     
+    /**
+     * Check the ionCube Loader is available
+     * @param mixed $version
+     * @param string $operator
+     * @return PART
+     */
+    public function checkIonCube($version = '', $operator = self::COMPARE_GREATER_THAN_OR_EQUAL)
+    {
+        $this->checkExtensionLoaded('ionCube Loader', $version, $operator);
+        return $this;
+    }
+
+
     public function __destruct()
     {
         $report = AbstractReport::getInstance();
