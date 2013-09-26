@@ -35,7 +35,13 @@ class PART
      */
     public function checkPHPVersion($version, $operator = self::COMPARE_GREATER_THAN_OR_EQUAL)
     {
-        $this->addResult('PHP version', version_compare(PHP_VERSION, $version, $operator), $version, PHP_VERSION, $operator);
+        $this->addResult(
+            'PHP version', 
+            version_compare(PHP_VERSION, $version, $operator), 
+            $version, 
+            PHP_VERSION, 
+            $operator
+        );
     }
 
     /**
@@ -125,7 +131,7 @@ class PART
      * @param mixed $version
      * @param string $operator
      */
-    public function checkPostgreSQLi($version = '', $operator = self::COMPARE_GREATER_THAN_OR_EQUAL)
+    public function checkPostgreSQL($version = '', $operator = self::COMPARE_GREATER_THAN_OR_EQUAL)
     {
         $this->checkExtensionLoaded('pgsql', $version, $operator);
     }
@@ -159,7 +165,7 @@ class PART
      */
     public function checkWindowsServer()
     {
-        $this->addResult('Windows serwer', $this->checkWindowsOs());
+        $this->addResult('Windows OS serwer', $this->checkWindowsOs());
     }
 
     /**
@@ -167,7 +173,7 @@ class PART
      */
     public function checkNotWindowsServer()
     {
-        $this->addResult('Not Windows serwer', !$this->checkWindowsOs());
+        $this->addResult('Not Windows OS serwer', !$this->checkWindowsOs());
     }
     
     public function __destruct()
