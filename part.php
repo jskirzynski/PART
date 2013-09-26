@@ -3,6 +3,8 @@
 /**
  * PART is a PHP Applications Requirements Tester
  * 
+ * LICENSE: See the LICENCE file included in this distribution.
+ * @license http://opensource.org/licenses/MIT MIT
  * @author Jacek Skirzynski <jacek@skirzynski.eu>
  */
 
