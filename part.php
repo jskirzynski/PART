@@ -215,6 +215,17 @@ class PART
         return $this;
     }
 
+    /**
+     * Check the Magic Quotes are disabled
+     * @return PART
+     */
+    public function checkDisableMagicQuotes()
+    {
+        $this->checkConfigHasValue('magic_quotes_gpc', 0);
+        $this->checkConfigHasValue('magic_quotes_runtime', 0);
+        $this->checkConfigHasValue('magic_quotes_sybase', 0);
+        return $this;
+    }
 
     public function __destruct()
     {
