@@ -32,6 +32,7 @@ class PART
      * @param string $version version of PHP in "PHP-standardized" format 
      * (http://www.php.net/manual/en/function.version-compare.php)
      * @param string $operator
+     * @return PART
      */
     public function checkPHPVersion($version, $operator = self::COMPARE_GREATER_THAN_OR_EQUAL)
     {
@@ -42,6 +43,8 @@ class PART
             PHP_VERSION, 
             $operator
         );
+        
+        return $this;
     }
 
     /**
@@ -50,6 +53,7 @@ class PART
      * @param string $name
      * @param string $version
      * @param string $operator
+     * @return PART
      */
     public function checkExtensionLoaded($name, $version = null, $operator = self::COMPARE_GREATER_THAN_OR_EQUAL)
     {
@@ -63,92 +67,110 @@ class PART
         }
 
         $this->addResult('Extension loaded [' . $name . ']', $result, $version, $value, $operator);
+        return $this;
     }
 
     /**
      * Check the extensions are loaded
      * @param array $names array of names extensions to check
+     * @return PART
      */
     public function checkExtensionsLoaded(array $names)
     {
         foreach ($names as $name) {
             $this->addResult('Extension loaded [' . $name . ']', extension_loaded($name));
         }
+        
+        return $this;        
     }
 
     /**
      * Check the config value
      * @param string $name name of php.ini directive for checking
      * @param mixed $expected expected value of directive
+     * @return PART
      */
     public function checkConfigHasValue($name, $expected, $operator = self::COMPARE_EQUAL)
     {
         $value = ini_get($name);
-
         $this->addResult('Config [' . $name . ']', $this->compare($value, $expected, $operator), $expected, $value);
+        return $this;
     }
 
     /**
      * Check the functions are not disabled
      * @param array $functions
+     * @return PART
      */
     public function checkNotDisabledFunctions(array $functions)
     {
         $this->checkNotDisabled(self::TYPE_AVAILABLE_FUNCTION, $functions);
+        return $this;
     }
 
     /**
      * Check the classes are not disabled
      * @param array $classes
+     * @return PART
      */
     public function checkNotDisabledClass(array $classes)
     {
         $this->checkNotDisabled(self::TYPE_AVAILABLE_CLASS, $classes);
+        return $this;
     }
 
     /**
      * Check the MySQL support extension is available
      * @param mixed $version
      * @param string $operator
+     * @return PART
      */
     public function checkMySQL($version = '', $operator = self::COMPARE_GREATER_THAN_OR_EQUAL)
     {
         $this->checkExtensionLoaded('mysql', $version, $operator);
+        return $this;
     }
 
     /**
      * Check the MySQLi support extension is available
      * @param mixed $version
      * @param string $operator
+     * @return PART
      */
     public function checkMySQLi($version = '', $operator = self::COMPARE_GREATER_THAN_OR_EQUAL)
     {
         $this->checkExtensionLoaded('mysqli', $version, $operator);
+        return $this;
     }
 
     /**
      * Check the PostgreSQL support extension is available
      * @param mixed $version
      * @param string $operator
+     * @return PART
      */
     public function checkPostgreSQL($version = '', $operator = self::COMPARE_GREATER_THAN_OR_EQUAL)
     {
         $this->checkExtensionLoaded('pgsql', $version, $operator);
+        return $this;
     }
 
     /**
      * Check the PDO module is available
      * @param mixed $version
      * @param string $operator
+     * @return PART
      */
     public function checkPDO($version = '', $operator = self::COMPARE_GREATER_THAN_OR_EQUAL)
     {
         $this->checkExtensionLoaded('PDO', $version, $operator);
+        return $this;
     }
 
     /**
      * Check the PDO driver is available
      * @param string $name
+     * @return PART
      */
     public function checkPDODriver($name)
     {
@@ -158,22 +180,27 @@ class PART
         }
 
         $this->addResult('PDO driver [' . $name . ']', in_array($name, $drivers));
+        return $this;
     }
 
     /**
      * Check the OS is MS Windows
+     * @return PART
      */
     public function checkWindowsServer()
     {
         $this->addResult('Windows OS serwer', $this->checkWindowsOs());
+        return $this;
     }
 
     /**
      * Check the OS isn't MS Windows
+     * @return PART
      */
     public function checkNotWindowsServer()
     {
         $this->addResult('Not Windows OS serwer', !$this->checkWindowsOs());
+        return $this;
     }
     
     public function __destruct()
