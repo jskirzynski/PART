@@ -226,6 +226,23 @@ class PART
         $this->checkConfigHasValue('magic_quotes_sybase', 0);
         return $this;
     }
+    
+    /**
+     * Check the default timezone
+     * @link http://www.php.net/manual/en/timezones.php
+     * @param string $timezone
+     * @return PART
+     */
+    public function checkDefaultTimezone($timezone)
+    {
+        $this->addResult(
+            'Default timezone', 
+            (date_default_timezone_get() == $timezone), 
+            $timezone, 
+            date_default_timezone_get()
+        );
+        return $this;
+    }
 
     public function __destruct()
     {
