@@ -1,20 +1,23 @@
 <?php
 
 /**
- * PAR is a PHP Applications Requirements Tester
- * Class for testing application requirements 
+ * PART is a PHP Applications Requirements Tester
  * 
  * @author Jacek Skirzynski <jacek@skirzynski.eu>
  */
+
+/**
+ * Class for testing application requirements 
+ */
 class PART
 {
-
     const COMPARE_EQUAL = '==';
     const COMPARE_NOT_EQUAL = '<>';
     const COMPARE_GREATER_THAN = '>';
     const COMPARE_GREATER_THAN_OR_EQUAL = '>=';
     const COMPARE_LESS_THAN = '<';
     const COMPARE_LESS_THAN_OR_EQUAL = '<=';
+    
     const TYPE_AVAILABLE_FUNCTION = 'function';
     const TYPE_AVAILABLE_CLASS = 'class';
 
@@ -166,18 +169,11 @@ class PART
     {
         $this->addResult('Not Windows serwer', !$this->checkWindowsOs());
     }
-
+    
     public function __destruct()
     {
-        echo "Test name\t\tResult\tExpected value\tSystem value" . PHP_EOL;
-        
-        foreach ($this->results as $record) {
-            echo $record['name'] . "\t\t" .
-            (($record['result']) ? 'OK' : 'failure') . "\t" .
-            $record['expected'] .
-            (($record['operator']) ? " (" . $record['operator'] . ")\t" : '') .
-            $record['value'] . PHP_EOL;
-        }
+        $report = AbstractReport::getInstance();
+        $report->generate($this->results);
     }
 
     /**
@@ -260,5 +256,92 @@ class PART
             'operator' => $operator
         ));
     }
+}
 
+/**
+ * Abstract class for report interface and provide report instances
+ * @abstract
+ */
+abstract class AbstractReport
+{
+    /**
+     * Return report instance based on type of call
+     * @static
+     * @return ConsoleReport
+     * @throws Exception
+     */
+    public static function getInstance()
+    {
+        if ('cli' == php_sapi_name()) {
+            return new ConsoleReport();
+        }
+        
+        throw new Exception('Only CLI calls are supported at the moment');
+    }
+    
+    /**
+     * Generate report in a specified format
+     * @abstract
+     * @param array $data array of results tests
+     */
+    abstract public function generate(array $data);
+}
+
+/**
+ * Report console format
+ */
+class ConsoleReport extends AbstractReport
+{
+    /**
+     * {@inheritdoc}
+     */
+    public function generate(array $data)
+    {
+        $this->printHeader();
+        
+        foreach ($data as $result) {            
+            $expected = $result['expected'];            
+            if ($result['operator']) {
+                $expected .= ' [' . $result['operator'] .']';
+            }
+            
+            echo sprintf(
+                '%-40s %-10s %-10s %-10s',
+                $result['name'],
+                (($result['result']) ? 'OK' : 'failure'),
+                $expected,
+                $result['value']
+            ) . PHP_EOL;
+        }
+        
+        $this->printWarning();
+    }
+    
+    /**
+     * Print header of report
+     */
+    protected function printHeader()
+    {
+        $this->printWarning();
+        echo sprintf(
+            '%-40s %-10s %-10s %-10s',
+            'Test name',
+            'Result',
+            'Expected',
+            'Environment'
+        ) . PHP_EOL;
+        
+        for ($i = 0; $i < 80; $i++) {
+            echo '=';
+        }
+        echo PHP_EOL;
+    }
+    
+    /**
+     * Print warning about different between web and CLI envirionment
+     */
+    protected function printWarning()
+    {
+        echo PHP_EOL . 'Warning: The CLI environment may be different from web environment' . PHP_EOL;
+    }
 }
