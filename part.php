@@ -121,7 +121,7 @@ class PART
 
     /**
      * Check the MySQL support extension is available
-     * @param mixed $version
+     * @param string $version
      * @param string $operator
      * @return PART
      */
@@ -133,7 +133,7 @@ class PART
 
     /**
      * Check the MySQLi support extension is available
-     * @param mixed $version
+     * @param string $version
      * @param string $operator
      * @return PART
      */
@@ -145,7 +145,7 @@ class PART
 
     /**
      * Check the PostgreSQL support extension is available
-     * @param mixed $version
+     * @param string $version
      * @param string $operator
      * @return PART
      */
@@ -157,7 +157,7 @@ class PART
 
     /**
      * Check the PDO module is available
-     * @param mixed $version
+     * @param string $version
      * @param string $operator
      * @return PART
      */
@@ -205,7 +205,7 @@ class PART
     
     /**
      * Check the ionCube Loader is available
-     * @param mixed $version
+     * @param string $version
      * @param string $operator
      * @return PART
      */
