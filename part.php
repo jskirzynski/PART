@@ -30,6 +30,21 @@ class PART
     protected $results = array();
 
     /**
+     * Instance of report
+     * @var Report
+     */
+    protected $report;
+
+    public function __construct(Report $report = null)
+    {
+        if ($report) {
+            $this->report = $report;
+        } else {
+            $this->report = Report::factory();
+        }
+    }
+
+    /**
      * Check the PHP version
      * @param string $version version of PHP in "PHP-standardized" format 
      * (http://www.php.net/manual/en/function.version-compare.php)
@@ -248,8 +263,7 @@ class PART
 
     public function __destruct()
     {
-        $report = AbstractReport::getInstance();
-        $report->generate($this->results);
+        $this->report->generate($this->results);
     }
 
     /**
@@ -262,7 +276,7 @@ class PART
     }
 
     /**
-     * Check the elements (functions or class) are not disabled
+     * Check the elements (functions or classes) are not disabled
      * @param string $type
      * @param array $names
      * @throws Exception
@@ -338,21 +352,20 @@ class PART
  * Abstract class for report interface and provide report instances
  * @abstract
  */
-abstract class AbstractReport
+abstract class Report
 {
     /**
      * Return report instance based on type of call
      * @static
      * @return ConsoleReport
-     * @throws Exception
      */
-    public static function getInstance()
+    public static function factory()
     {
         if ('cli' == php_sapi_name()) {
             return new ConsoleReport();
+        } else {
+            return new WebReport();
         }
-        
-        throw new Exception('Only CLI calls are supported at the moment');
     }
     
     /**
@@ -366,7 +379,7 @@ abstract class AbstractReport
 /**
  * Report console format
  */
-class ConsoleReport extends AbstractReport
+class ConsoleReport extends Report
 {
     /**
      * {@inheritdoc}
@@ -398,6 +411,7 @@ class ConsoleReport extends AbstractReport
      */
     protected function printHeader()
     {
+        echo 'PHP Applications Requirements Tester - Report' . PHP_EOL;
         $this->printWarning();
         echo sprintf(
             '%-40s %-10s %-10s %-10s',
@@ -419,5 +433,76 @@ class ConsoleReport extends AbstractReport
     protected function printWarning()
     {
         echo PHP_EOL . 'Warning: The CLI environment may be different from web environment' . PHP_EOL;
+    }
+}
+
+/**
+ * Report web format
+ */
+class WebReport extends Report
+{
+    /**
+     * {@inheritdoc}
+     */
+    public function generate(array $data)
+    {
+        $this->printWebHeader();
+        
+        echo '<tr>
+            <th>Test name</th>
+            <th>Result</th>
+            <th>Expected</th>
+            <th>Environment</th>
+        </tr>';
+        
+        foreach ($data as $result) {
+            $expected = $result['expected'];            
+            if ($result['operator']) {
+                $expected .= ' [' . $result['operator'] .']';
+            }
+            
+            echo '<tr>
+                <td class="left">'. $result['name'] .' </td>
+                <td class="'. (($result['result']) ? 'success' : 'failure') .'">'. (($result['result']) ? 'OK' : 'failure') .'</td>
+                <td>'. $expected .'</td>
+                <td>'. $result['value'] .'</td>
+                </tr>';
+        }
+        
+        $this->printWebFooter();
+    }    
+    
+    /**
+     * Print header 
+     */
+    protected function printWebHeader()
+    {
+        echo '<?xml version="1.0" encoding="UTF-8"?>
+            <html xmlns="http://www.w3.org/1999/xhtml">
+            <head>
+                <title>PHP Applications Requirements Tester - Report</title>
+                <style type="text/css">
+                body {font-family: sans-serif;}
+                table {border-collapse: collapse;border-width: 1px;border-style: outset;border-color: gray; margin-right: auto; margin-left: auto;}
+                td,th {text-align: center; padding: 5px;border-style: inset;border-width: 1px; border-color: gray;}
+                tr:nth-child(even) {background-color: #EEE;}
+                .left {text-align: left;}
+                .success {color: green; font-weight: bold; text-align: center;}
+                .failure {color: red; font-weight: bold; text-align: center;}
+                </style>
+            </head>
+            <body>
+            <table>
+                <tr>
+                    <th colspan="4">PHP Applications Requirements Tester - Report</th>
+                </tr>';
+    }
+    
+    /**
+     * Print footer
+     */
+    protected function printWebFooter()
+    {
+        echo '</table></body></html>';
     }
 }
