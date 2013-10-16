@@ -419,12 +419,10 @@ class ConsoleReport extends Report
             'Result',
             'Expected',
             'Environment'
-        ) . PHP_EOL;
-        
-        for ($i = 0; $i < 80; $i++) {
-            echo '=';
-        }
-        echo PHP_EOL;
+        ) 
+            . PHP_EOL 
+            . str_repeat('=', 80)
+            . PHP_EOL;
     }
     
     /**
