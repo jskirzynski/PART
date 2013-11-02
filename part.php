@@ -548,3 +548,73 @@ class WebReport extends Report
         echo '</table></body></html>';
     }
 }
+
+/**
+ * Report which stores only results
+ */
+class DataReport extends Report implements Iterator
+{
+    /**
+     * Value of current key/position
+     * @var integer
+     */
+    protected $currentKey = 0;
+
+    /**
+     * Results array
+     * @var array
+     */
+    protected $data = array();
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generate(array $data)
+    {
+        foreach ($data as $result) {
+            $object = new stdClass();
+            $object->name = $result['name'];
+            $object->value = $result['value'];
+            $object->expected = $result['expected'];
+            $object->result = $result['result'];
+            $object->operator = $result['operator'];
+            
+            array_push($this->data, $object);
+        }
+    }
+    
+    /**
+     * Get array of results
+     * @return array
+     */
+    public function getArray()
+    {
+        return $this->data;
+    }
+
+    public function current()
+    {
+        return $this->data[$this->currentKey];
+    }
+
+    public function key()
+    {
+        return $this->currentKey;
+    }
+
+    public function next()
+    {
+        $this->currentKey += 1;
+    }
+
+    public function rewind()
+    {
+        $this->currentKey = 0;
+    }
+
+    public function valid()
+    {
+        return array_key_exists($this->currentKey, $this->data);
+    }
+
+}
