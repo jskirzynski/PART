@@ -70,7 +70,7 @@ class PART
         if ($report) {
             $this->report = $report;
         } else {
-            $this->report = Report::factory();
+            $this->report = ReportFactory::factory();
         }
     }
 
@@ -393,37 +393,51 @@ class PART
 }
 
 /**
- * Abstract class for report interface and provide report instances
- * @abstract
+ * Interface for reports
  */
-abstract class Report
+interface Report
+{
+    /**
+     * Generate report in a specified format
+     * @param array $data array of results tests
+     */
+    public function generate(array $data);
+}
+
+/**
+ * Factory class for reports
+ */
+class ReportFactory
 {
     /**
      * Return report instance based on type of call
      * @static
-     * @return ConsoleReport
+     * @param string $type name of type
+     * @return Report
      */
-    public static function factory()
+    public static function factory($type = null)
     {
-        if ('cli' == php_sapi_name()) {
-            return new ConsoleReport();
+        if (is_null($type)) {
+            if ('cli' == php_sapi_name()) {
+                return new ConsoleReport();
+            } else {
+                return new WebReport();
+            }
         } else {
-            return new WebReport();
+            $className = ucfirst($type) . 'Report';
+            if (class_exists($className)) {
+                return new $className;
+            } else {
+                throw new InvalidArgumentException('Invalid type of report: '. $className);
+            }
         }
     }
-    
-    /**
-     * Generate report in a specified format
-     * @abstract
-     * @param array $data array of results tests
-     */
-    abstract public function generate(array $data);
 }
 
 /**
  * Report console format
  */
-class ConsoleReport extends Report
+class ConsoleReport implements Report
 {
     /**
      * {@inheritdoc}
@@ -481,7 +495,7 @@ class ConsoleReport extends Report
 /**
  * Report web format
  */
-class WebReport extends Report
+class WebReport implements Report
 {
     /**
      * {@inheritdoc}
@@ -552,7 +566,7 @@ class WebReport extends Report
 /**
  * Report which stores only results
  */
-class DataReport extends Report implements Iterator
+class DataReport implements Report, Iterator
 {
     /**
      * Value of current key/position
