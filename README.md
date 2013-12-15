@@ -5,14 +5,14 @@ PART is a **P**HP **A**pplications **R**equirements **T**ester.
 
 PART allows you to check if the hosting server meets application requirements.
 
-## Using
-Using of PART is very simple - you only have to invoke tests for what you need.
+## Usage
+Using PART is very simple - you only invoke tests for what you need.
 
 ### Versions
-Many of the tests may check version e.g. extension. If you want to check version you have to put it in "PHP-standardized" version number strings (see http://www.php.net/manual/en/function.version-compare.php) as parameter of test.
+Many of the tests may check version e.g. extension. If you want to check a version you should put it in "PHP-standardized" version number strings (see http://www.php.net/manual/en/function.version-compare.php) as parameter of test.
 
 ### Operators
-If you want to check version you can specify a operator using defined class constants, you can see a list of available operators below:
+If you want to check version you can specify the operator by using defined class constants. You can see a list of available operators below:
 
 * `PART::COMPARE_EQUAL`
 * `PART::COMPARE_NOT_EQUAL`
@@ -36,24 +36,24 @@ You can see a list of current available tests below:
 * check default Time Zone
 
 ## Reports
-Reports define what, it will do after the all tests. PART has built-in 3 kind of report.
+Reports define behaviour of PART after all tests. PART has a built-in 3 kind of report.
 
-You can define type of report which you want to get, by constructor parameter:
+You can define the type of reports which you want to obtain using constructor parameter:
 
 `$part = new PART(new DataReport());`
 
-If you don't specify kind of report, PART will decide about this itself based on run environment. 
+If you do not specify a kind of report, PART will decide itself basing the decision on the run environment. 
 
 ### ConsoleReport
-ConsoleReport generates human-readable report for viewing in console. This type is default for CLI environments.
+ConsoleReport generates a human-readable report for viewing in the console. This type is default for CLI environments.
 
 ### WebReport
-WebReport generates report as HTML for viewing in web browser. This type is default for invoking by web browser.
+WebReport generates a report as a HTML for viewing in web browser. This type is default for invoking by web browser.
 
 ### DataReport
-DataReport only stores objects array of results tests. Object DataReport implements Iterator interface, so you can use it with foreach. Second way to using results is invoke `getArray()` for getting pure array. 
+DataReport only stores objects array of results tests. Object DataReport implements Iterator interface, so you can use it with foreach. The second way to use the results is to invoke `getArray()` for getting a pure array. 
 
-DataReport stores only results of tests in object and doesn't generate human-readable reports. For using this type you have to create it and pass it by parameter to PART constructor. Additionaly you have to add invoke `generateReport()` after the last test.
+DataReport stores only results of tests in an object and does not generate human-readable reports. For using this type you have to create it and pass it by parameter to PART constructor. Additionaly, you have to add `generateReport()` to invoke the function after the last test.
 
 ## Author
 Jacek Skirzyński, <http://skirzynski.eu/>
