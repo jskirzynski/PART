@@ -51,7 +51,7 @@ class PART
 
     /**
      * Instance of report
-     * @var Report
+     * @var ReportInterface
      */
     protected $report;
     
@@ -63,9 +63,9 @@ class PART
 
     /**
      * Create object with specified type of report or depends on run environment 
-     * @param Report $report
+     * @param ReportInterface $report
      */
-    public function __construct(Report $report = null)
+    public function __construct(ReportInterface $report = null)
     {
         if ($report) {
             $this->report = $report;
@@ -395,7 +395,7 @@ class PART
 /**
  * Interface for reports
  */
-interface Report
+interface ReportInterface
 {
     /**
      * Generate report in a specified format
@@ -413,7 +413,7 @@ class ReportFactory
      * Return report instance based on type of call
      * @static
      * @param string $type name of type
-     * @return Report
+     * @return ReportInterface
      */
     public static function factory($type = null)
     {
@@ -437,7 +437,7 @@ class ReportFactory
 /**
  * Report console format
  */
-class ConsoleReport implements Report
+class ConsoleReport implements ReportInterface
 {
     /**
      * {@inheritdoc}
@@ -495,7 +495,7 @@ class ConsoleReport implements Report
 /**
  * Report web format
  */
-class WebReport implements Report
+class WebReport implements ReportInterface
 {
     /**
      * {@inheritdoc}
@@ -566,7 +566,7 @@ class WebReport implements Report
 /**
  * Report which stores only results
  */
-class DataReport implements Report, Iterator
+class DataReport implements ReportInterface, Iterator
 {
     /**
      * Value of current key/position
